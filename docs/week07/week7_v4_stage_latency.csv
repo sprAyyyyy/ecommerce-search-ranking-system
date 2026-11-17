@@ -1,0 +1,5 @@
+stage,mean_ms
+SBERT embedding,21.156650699981583
+FAISS retrieval,4.366794500015203
+Feature generation,91.18548460002103
+LambdaMART ranking,2.995354200015754

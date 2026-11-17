@@ -1,14 +1,15 @@
 # Publication checklist
 
-- [ ] Confirm ownership and permission to publish any code written during an internship or employment.
-- [ ] Confirm the source dataset terms allow redistribution of any data samples or images.
-- [ ] Keep the initial repository **private** until the above review is complete.
-- [ ] Add reviewed Week 1–8 notebooks; remove cell outputs and secrets.
-- [ ] Add reviewed FastAPI and Streamlit source files, then document actual start commands.
-- [ ] Add final report PDF after checking its contents.
-- [ ] Retain small aggregate metrics and charts; omit raw data and model weights.
-- [ ] Validate that README scores and experiment scopes match the report.
-- [ ] Run `python scripts/preflight_repo.py`.
-- [ ] Confirm key notebook execution steps in a clean environment, or mark experiments as archival.
-- [ ] Choose a software license if you have rights to distribute the implementation.
-- [ ] Set GitHub repository description, topics and featured/pinned status.
+- [x] Add 28 original historical Week 1–8 notebooks (outputs removed).
+- [x] Add Week 7 FastAPI and Streamlit service source.
+- [x] Add reported aggregate metrics and plots.
+- [x] Add the revised final Week 8 technical report.
+- [x] Omit raw catalog, image embeddings and LambdaMART weights from GitHub package.
+- [x] Add a local-only artifact restore script.
+- [ ] Confirm internship/employer code ownership and publication permissions.
+- [ ] Confirm dataset terms permit this use and any future redistribution.
+- [ ] Manually review notebook source cells for personal identifiers, proprietary comments and credentials.
+- [ ] Set up local Python environment and verify live FastAPI/Streamlit endpoints.
+- [ ] Optionally pin working dependency versions and add integration tests.
+- [ ] Add a license if rights are verified.
+- [ ] Push the reviewed file changes to GitHub.

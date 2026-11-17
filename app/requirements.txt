@@ -1,0 +1,15 @@
+fastapi
+uvicorn[standard]
+pydantic
+pandas
+pyarrow
+numpy
+scikit-learn
+faiss-cpu
+lightgbm
+sentence-transformers
+rank-bm25
+transformers
+torch
+streamlit
+requests

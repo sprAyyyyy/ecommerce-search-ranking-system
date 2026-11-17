@@ -1,0 +1,42 @@
+{
+  "feature_cols": [
+    "bm25_score",
+    "tfidf_similarity",
+    "query_title_overlap",
+    "query_description_overlap",
+    "sbert_similarity",
+    "clip_similarity",
+    "sbert_available",
+    "clip_available",
+    "price",
+    "average_rating",
+    "review_count",
+    "log_price",
+    "log_review_count",
+    "log_review_count_w5",
+    "price_missing",
+    "price_missing_w5",
+    "rating_missing_w5",
+    "query_len",
+    "title_len",
+    "description_len",
+    "exact_title_match",
+    "query_in_title",
+    "query_title_token_coverage",
+    "brand_in_query",
+    "category_token_match",
+    "bm25_score_qnorm",
+    "tfidf_similarity_qnorm",
+    "sbert_similarity_qnorm",
+    "clip_similarity_qnorm"
+  ],
+  "train_medians": {
+    "price": 13.995000000000001,
+    "average_rating": 4.333333333333333,
+    "review_count": 4.0
+  },
+  "sbert_model_name": "sentence-transformers/all-MiniLM-L6-v2",
+  "clip_model_name": "openai/clip-vit-base-patch32",
+  "default_candidate_k": 100,
+  "default_top_k": 10
+}

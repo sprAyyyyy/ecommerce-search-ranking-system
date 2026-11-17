@@ -1,134 +1,126 @@
 # E-Commerce Search & Learning-to-Rank System
 
-**An end-to-end product search prototype, developed over eight weeks using the public Amazon Reviews (2018) product ecosystem.** The project explores query understanding, lexical and semantic retrieval, multimodal signals, supervised ranking, cold-start adaptation, and interactive serving.
+**An eight-week end-to-end e-commerce product search project** combining lexical, semantic, and multimodal retrieval with supervised learning-to-rank, zero-shot cold-start support, and a FastAPI + Streamlit demo.
 
-> **Portfolio project notice:** This is an independent technical project using a public Amazon-related dataset. This repository is not an official Amazon source-code release and does not imply endorsement by or affiliation with Amazon.com, Inc. Original implementation notebooks, data and model artifacts are not part of this starter snapshot; add reviewed versions before advertising the repository as fully reproducible.
+> **Independent technical portfolio; not an official Amazon code release.** Developed using the public Amazon Reviews (2018) research ecosystem. The user-provided archive contained these source files; the author must verify any internship/employer publication rights before public distribution. Reported experimental results are from the original technical report, **not independently rerun for this GitHub release**.
 
-![System architecture](assets/system_architecture.svg)
+![Search architecture](assets/system_architecture.svg)
 
-## Highlights
+## Headline results
 
-| Metric | Reported result | Evaluation setting |
-|---|---:|---|
-| Best ranking NDCG@10 (LambdaMART) | **0.9297** | Fixed 200-query candidate reranking benchmark |
-| Relative NDCG@10 improvement vs BM25 | **+15.75%** | Same 200-query reranking benchmark |
-| LambdaMART MRR | **0.9667** | Same 200-query reranking benchmark |
-| ZeroShot+LLM NDCG@10 | **0.8990** | Separate 45-query cold-start holdout |
-| Fresh mean serving latency | **83.94 ms** | Optimized serving benchmark |
-| Fresh P95 serving latency | **99.91 ms** | Optimized serving benchmark |
+| Metric | Result | Scope |
+|:--|--:|:--|
+| **LambdaMART NDCG@10** | **0.9297** | Fixed 200-query reranking candidate set |
+| **Improvement over BM25** | **+15.75%** | Same reranking candidate set |
+| LambdaMART MRR | 0.9667 | Same reranking candidate set |
+| ZeroShot+LLM NDCG@10 | 0.8990 | Separate 45-query cold-start holdout |
+| V1.3 fresh mean latency | 83.94 ms | Week 7 serving optimization benchmark |
+| V4 packaged mean latency | 119.95 ms | Separate packaged system recheck |
 
-**Results above are transcribed from the project's final technical report, not independently reproduced during this repository packaging step.** Retrieval, reranking, cold-start and latency metrics come from different test scopes and should not be compared directly.
+**Do not compare scores across different evaluation scopes as one leaderboard.**
 
-![Ranking NDCG@10](assets/reranking_ndcg10.png)
+![Reranking benchmark](assets/reranking_ndcg10.png)
 
-## The problem
+## What is actually in this repository?
 
-Search relevance needs more than a single model: a useful system must retrieve relevant products from a large catalog, rank the candidate set well, handle queries with little supervised evidence, and serve results with acceptable latency.
+This repository now contains the **historical source code**: 28 selected Google Colab notebooks from Weeks 1–8, FastAPI search service code, Streamlit demo source, Docker / API test files, the revised final technical report, plots and small aggregate benchmark tables.
 
-This project evaluates four distinct questions:
-1. **Candidate retrieval:** can relevant items be found in the full catalog?
-2. **Reranking quality:** can highly relevant candidates be placed near the top?
-3. **Cold-start quality:** can limited-label queries be handled well?
-4. **Serving:** can the integrated system respond quickly enough for an interactive demo?
-
-## System design
-
-```mermaid
-flowchart LR
-    A[User query] --> B[Normalization + Llama 3 query understanding]
-    B --> C[Candidate retrieval]
-    C --> D[BM25 lexical]
-    C --> E[SBERT + FAISS]
-    C --> F[CLIP image-text]
-    D --> G[Hybrid features and metadata]
-    E --> G
-    F --> G
-    G --> H[LambdaMART reranker]
-    B --> I[ZeroShot + LLM cold-start fallback]
-    I -. When labels are limited .-> J[Ranked results]
-    H --> J
-    J --> K[FastAPI / Streamlit]
+```text
+.
+├── README.md
+├── notebooks/
+│   ├── week01/  # preprocessing and EDA
+│   ├── week02/  # TF-IDF and BM25
+│   ├── week03/  # Llama 3 query understanding
+│   ├── week04/  # SBERT, FAISS, CLIP and hybrid retrieval
+│   ├── week05/  # LambdaMART, XGBoost, ListNet
+│   ├── week06/  # zero-shot / LLM cold start
+│   ├── week07/  # serving and optimization experiments
+│   └── week08/  # final evaluation, ablation and diagnostics
+├── app/         # FastAPI, Streamlit, tests and Docker source
+├── assets/      # plots and architecture diagrams
+├── results/     # small aggregate CSV benchmarks
+├── docs/        # final PDF and evaluation documentation
+├── scripts/     # checks and local artifact restoration
+└── tests/
 ```
 
-## Experimental roadmap
+The **product catalog, saved embeddings, trained model weights, source ZIP intermediates, and raw human-judgment files are not included** in the public package. Those are needed for full local execution. See [reproduction guide](docs/reproduction.md).
 
-| Week | Focus | Representative tools |
-|---|---|---|
-| 1 | Data cleaning, query normalization, relevance labeling, EDA | Python, pandas, Parquet |
-| 2 | Lexical retrieval and ranking baselines | TF-IDF, BM25, cosine similarity |
-| 3 | Query intent, attribute extraction, rewriting | Llama 3, Ollama, structured JSON |
-| 4 | Semantic/multimodal retrieval and coverage-aware fusion | SBERT, FAISS, CLIP |
-| 5 | Supervised learning-to-rank and ablation | XGBoost, LambdaMART, ListNet |
-| 6 | Cold-start benchmarking | ZeroShot adapter, LLM relevance |
-| 7 | System integration, serving and latency | FastAPI, Streamlit, caching |
-| 8 | Unified benchmarks, error analysis, report | NDCG, MRR, MAP, Recall |
+## Methodology: Week 1–8
 
-## Results
+| Week | Milestone | Methods |
+|:--|:--|:--|
+| 1 | Preprocessing and product relevance | pandas, Parquet, EDA, proxy labels |
+| 2 | Lexical ranking baseline | TF-IDF, BM25, cosine similarity, NDCG/Recall/MRR |
+| 3 | Query understanding | local Llama 3 via Ollama, intent, attributes, rewriting |
+| 4 | Dense + multimodal retrieval | SBERT, FAISS, CLIP, hybrid fusion |
+| 5 | Learning-to-rank | XGBoost pointwise, LambdaMART, ListNet, ablations |
+| 6 | Cold start | zero-shot adapter and LLM relevance |
+| 7 | Integration and deployment | FastAPI, Streamlit, caching, latency |
+| 8 | Final review | reranking/retrieval/cold-start benchmarks, error analysis |
 
-### 200-query reranking (fixed candidate set)
+## Ranking results — fixed-candidate 200-query benchmark
 
 | Model | NDCG@10 | MAP@10 | MRR |
-|---|---:|---:|---:|
+|:--|--:|--:|--:|
 | **LambdaMART** | **0.9297** | 0.9072 | **0.9667** |
-| XGBoost Pointwise | 0.9222 | **0.9133** | 0.9625 |
+| XGBoost pointwise | 0.9222 | **0.9133** | 0.9625 |
 | ListNet | 0.9196 | 0.8923 | 0.9533 |
 | SBERT | 0.8058 | 0.7286 | 0.7783 |
 | BM25 | 0.8032 | 0.7372 | 0.7958 |
 | TF-IDF | 0.7799 | 0.6940 | 0.7358 |
 | CLIP | 0.7325 | 0.7338 | 0.7050 |
 
-The **15.75%** improvement is computed as `(0.9297 / 0.8032 - 1) × 100` on the **same fixed reranking benchmark**.
+LambdaMART improvement over BM25 in the **same** reranking benchmark: `(0.9297 / 0.8032 - 1) * 100 = 15.75%`.
 
-### Full-catalog retrieval (different 200-query evaluation)
+## Retrieval quality vs coverage
 
-BM25 achieved the highest reported **Recall@50 = 0.6442**. SBERT+CLIP achieved **NDCG@10 = 0.8066** but lower **Recall@50 = 0.4825**, highlighting a coverage-versus-ordering trade-off.
+On a separate full-catalog retrieval evaluation, **SBERT+CLIP** achieved NDCG@10 **0.8066**, while **BM25** achieved the highest Recall@50 **0.6442**. This demonstrates why high judged ordering quality and candidate coverage should be evaluated independently.
 
 ![Retrieval trade-off](assets/retrieval_tradeoff.png)
 
-### Ablation
+## Feature importance, cold start and error analysis
 
-Removing metadata/structural features reduced NDCG@10 by 0.0388; removing lexical features reduced it by 0.0321. Semantic and multimodal evidence was complementary, not a wholesale replacement for lexical matching.
+Metadata/structural features made the largest reported ablation contribution (NDCG@10 drop 0.0388), followed by lexical (0.0321), semantic SBERT (0.0106), and CLIP (0.0042).
 
 ![Ablation](assets/feature_ablation.png)
 
-### Cold start
+On a separate 45-query cold-start holdout, ZeroShot+LLM NDCG@10 = **0.8990**, near the LambdaMART reference **0.9050**. In reranking, **37/200** queries had LambdaMART NDCG@10 below 0.90, including top-1 inversions and ambiguous subjective queries.
 
-On a **separate 45-query holdout**, ZeroShot+LLM reached **0.8990 NDCG@10**, versus the LambdaMART reference of **0.9050** on that holdout. These figures are not interchangeable with the primary reranking benchmark.
+![Cold-start comparison](assets/04_coldstart_comparison.png)
 
-### Latency & diagnostics
+## Week 7 application (source included)
 
-Optimized fresh mean latency was **83.94 ms** (P95 **99.91 ms**) vs the earlier mean **212.86 ms**, a **60.57%** reduction. In the fixed 200-query reranking set, **37 queries** had NDCG@10 below 0.90; leading categories included top-1 inversions and ambiguous/subjective queries.
+The original Week 7 service uses **SBERT query embeddings → FAISS Top-100 retrieval → 29 ranking features → saved LambdaMART → FastAPI → Streamlit**. It was validated in the original project with a 10,000-product catalog.
 
-## Repository layout
+**Restore local model/data artifacts before starting the service:**
 
-```text
-ecommerce-search-ranking-system/
-├── README.md
-├── assets/                     # Architecture and benchmark figures
-├── results/                    # Report-transcribed, small aggregate CSVs
-├── docs/                       # Evaluation protocol and reproduction notes
-├── notebooks/                  # Import reviewed Week 1–8 Colab notebooks
-├── app/                        # Import reviewed FastAPI/Streamlit source
-├── scripts/                    # Chart regeneration, notebook import, safety checks
-└── .github/workflows/          # Lightweight repository checks
+```bash
+# Run from repository root, using your own original project ZIP
+python scripts/restore_local_runtime_artifacts.py --source "/path/to/amazon internship.zip"
+
+# Start backend from app/
+cd app
+python -m pip install -r requirements.txt
+python -m uvicorn amazon_search_service.main:app --host 127.0.0.1 --port 8000
+
+# Another terminal, in app/:
+streamlit run streamlit_app.py
 ```
 
-## Reproduction and implementation status
+The API supports `GET /health` and `POST /search` with `query`, `top_k`, and `candidate_k`. Model downloads may require Internet. The exact original dependency versions were not pinned and the newly repackaged source has **not** been run end-to-end in a clean environment.
 
-This repository starter preserves a **report-backed results snapshot**, rather than pretending that all experiments can run from it immediately. The original Colab notebooks and ZIP deliverables must be reviewed and imported separately. Some experiments depend on large datasets, pretrained weights, upstream ZIP outputs, Google Colab, and (for Week 3) a local Ollama/Llama 3 environment.
+## Verify this publication snapshot
 
-- Start with [`docs/reproduction.md`](docs/reproduction.md) for original notebook names and dependency constraints.
-- Run `python scripts/verify_report_metrics.py` to check the published aggregate comparisons.
-- Use `python scripts/import_notebooks.py --source "/path/to/your/downloads" --apply` to stage approved notebooks with outputs removed. This **does not execute** the notebooks.
-- Add reviewed Week 7 API/Streamlit code from the original archives before claiming the demo is runnable.
-- Run `python scripts/preflight_repo.py` before publishing.
+```bash
+python scripts/verify_report_metrics.py
+python scripts/preflight_repo.py
+python -m unittest discover -s tests
+```
 
-## Limitations
+These validate aggregate numbers, publication heuristics and staging-code tests — **not the original training run**. See the [final technical report](docs/Amazon_Week8_Final_Technical_Report_Revised.pdf), the [methodology notes](docs/evaluation_protocol.md), and the [Chinese upload guide](docs/IMPORT_NEXT_STEPS_ZH.md).
 
-The report notes partly proxy-based relevance labels, limited manual validation, different evaluation scopes, image-availability dependence, and the absence of real online conversion/user-satisfaction metrics. Follow-up work could add query-adaptive hybrid fusion, hard-negative mining, a lexical safety path, stronger human relevance audits and online evaluation.
+## Limits and attribution
 
-## Data & attribution
-
-Dataset provenance: [Amazon Review Data (2018), Ni et al.](https://nijianmo.github.io/amazon/). Check the original dataset's terms and applicable permissions before redistributing raw or derivative files. Do **not** commit credentials, unreviewed datasets, large model checkpoints, proprietary employer code or personally identifiable information.
-
-A software license is intentionally not included in this starter because you should choose one only after confirming ownership and distribution rights for the code and data.
+Some relevance labels were proxy-derived; manual checks cover only a limited sample. Offline search quality does not imply production conversion or user satisfaction. Dataset provenance: [Amazon Reviews 2018 — Ni et al.](https://nijianmo.github.io/amazon/). Confirm permissions before redistributing employer work, product data, images, trained artifacts or source records. This repository intentionally has no software license until ownership is confirmed.

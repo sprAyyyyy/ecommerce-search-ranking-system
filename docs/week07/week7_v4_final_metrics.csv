@@ -1,0 +1,12 @@
+metric,value,target,status
+Catalog products,10000.0,10K,PASS
+Retrieval candidate count,100.0,Top-100,PASS
+LambdaMART runtime features,29.0,Exact Week5 schema,PASS
+V1.1 mean latency (ms),212.86,<200,NOT MET
+V1.3 fresh mean latency (ms),83.94,<200,PASS
+V1.3 fresh P95 latency (ms),99.91,<200,PASS
+V1.3 cached mean latency (ms),28.84,<200,PASS
+V2 API round-trip mean (ms),92.56903489997512,<200,PASS
+V2 API round-trip P95 (ms),119.58991929988085,<200,PASS
+V4 fresh recheck mean (ms),119.95317089996433,<200,PASS
+Latency reduction V1.1 → V1.3 (%),60.565629991543744,Improve runtime,PASS
