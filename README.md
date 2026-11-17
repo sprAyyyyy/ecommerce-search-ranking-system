@@ -16,14 +16,18 @@
 | ZeroShot+LLM NDCG@10 | 0.8990 | Separate 45-query cold-start holdout |
 | V1.3 fresh mean latency | 83.94 ms | Week 7 serving optimization benchmark |
 | V4 packaged mean latency | 119.95 ms | Separate packaged system recheck |
+| **Local 100-query API mean / P95** | **40.65 / 49.27 ms** | Nov 17, 2026; sequential warm API on CPU |
+| **Local API success rate** | **100 / 100 (100%)** | Same 100-query smoke benchmark |
 
 **Do not compare scores across different evaluation scopes as one leaderboard.**
 
 ![Reranking benchmark](assets/reranking_ndcg10.png)
 
+> **New independent local functional verification (November 17, 2026):** the original FastAPI + Streamlit implementation was successfully launched on the project author's Windows CPU machine after restoring locally held artifacts. This confirms that the core retrieval and reranking service is runnable with the required files. It does **not** reproduce the original offline NDCG/MRR experiments or demonstrate cold-start/concurrent production performance. See [Local runtime validation](#local-runtime-validation--100-api-requests).
+
 ## What is actually in this repository?
 
-This repository now contains the **historical source code**: 28 selected Google Colab notebooks from Weeks 1–8, FastAPI search service code, Streamlit demo source, Docker / API test files, the revised final technical report, plots and small aggregate benchmark tables.
+This repository contains the **historical source code**: 28 selected Google Colab notebooks from Weeks 1–8, FastAPI search service code, Streamlit demo source, Docker / API test files, the revised final technical report, plots and small aggregate benchmark tables.
 
 ```text
 .
@@ -37,15 +41,19 @@ This repository now contains the **historical source code**: 28 selected Google 
 │   ├── week06/  # zero-shot / LLM cold start
 │   ├── week07/  # serving and optimization experiments
 │   └── week08/  # final evaluation, ablation and diagnostics
-├── app/         # FastAPI, Streamlit, tests and Docker source
-├── assets/      # plots and architecture diagrams
-├── results/     # small aggregate CSV benchmarks
-├── docs/        # final PDF and evaluation documentation
-├── scripts/     # checks and local artifact restoration
-└── tests/
+├── app/                            # FastAPI, Streamlit, tests and Docker source
+├── assets/                         # Original model-quality charts and architecture
+├── results/                        # Report-transcribed offline benchmark CSVs
+├── docs/                           # Final PDF and evaluation documentation
+├── scripts/                        # Local artifact restoration and verification
+├── tests/                          # Staging-script unit tests
+├── benchmark_100_queries.ps1       # Windows sequential API benchmark (new)
+├── benchmark_100_queries.csv       # 100 per-query observations (new)
+├── benchmark_100_query_latency.png # Local latency chart (new)
+└── local_runtime_validation.md     # 100-query test protocol and analysis (new)
 ```
 
-The **product catalog, saved embeddings, trained model weights, source ZIP intermediates, and raw human-judgment files are not included** in the public package. Those are needed for full local execution. See [reproduction guide](docs/reproduction.md).
+The **product catalog, saved embeddings, trained model weights, source ZIP intermediates, and raw human-judgment files are not included** in the public repository. They can be restored from the author's original project archive for local execution, subject to usage permissions. See [reproduction guide](docs/reproduction.md).
 
 ## Methodology: Week 1–8
 
@@ -109,7 +117,85 @@ python -m uvicorn amazon_search_service.main:app --host 127.0.0.1 --port 8000
 streamlit run streamlit_app.py
 ```
 
-The API supports `GET /health` and `POST /search` with `query`, `top_k`, and `candidate_k`. Model downloads may require Internet. The exact original dependency versions were not pinned and the newly repackaged source has **not** been run end-to-end in a clean environment.
+The API supports `GET /health` and `POST /search` with `query`, `top_k`, and `candidate_k`. Model downloads may require Internet. The source has **now been run successfully by the author on a local Windows CPU setup** with restored artifacts; it has **not** been independently tested in a fresh, clean installation or under concurrent traffic. Exact original dependency versions were not pinned.
+
+Example request using FastAPI's interactive documentation at `http://127.0.0.1:8000/docs`:
+
+```json
+{
+  "query": "best non drying lip stain",
+  "top_k": 5,
+  "candidate_k": 100
+}
+```
+
+The author observed HTTP 200 with returned ranked products for this query. To launch the Streamlit UI against the API in Windows PowerShell (from `app/` in another terminal):
+
+```powershell
+$env:API_URL = "http://127.0.0.1:8000"
+python -m streamlit run streamlit_app.py
+```
+
+Open `http://localhost:8501` for the search UI. The documented service also supports direct Streamlit mode without a separate API server.
+
+## Local runtime validation — 100 API requests
+
+The original Week 7 application was launched **successfully on a Windows CPU machine on November 17, 2026**, after restoring the required model/data artifacts locally. Manual checks verified a working Streamlit search page, a healthy FastAPI server, and a successful `POST /search` request that returned ranked products.
+
+The FastAPI health endpoint reported:
+
+| Component | Observed value |
+|:--|--:|
+| Catalog products | **10,000** |
+| FAISS indexed products | **10,000** |
+| LambdaMART ranking features | **29** |
+| Device | **CPU** |
+| Health endpoint | **HTTP 200** |
+
+### Benchmark summary
+
+**100 distinct query requests** were executed sequentially against the already running local FastAPI service, following **one unmeasured warm-up request**. Every request used `top_k=5` and `candidate_k=100`; all 100 returned five products with no request failures. The 100 terms were 20 product themes combined with five query patterns.
+
+| Latency statistic | Server pipeline | Client HTTP round trip |
+|:--|--:|--:|
+| **Mean** | **40.65 ms** | **42.65 ms** |
+| P50 | 39.71 ms | 41.73 ms |
+| **P95** | **49.27 ms** | **51.29 ms** |
+| P99 | 52.33 ms | 54.32 ms |
+| Minimum | 32.47 ms | 34.46 ms |
+| Maximum | 55.24 ms | 57.16 ms |
+| Successful requests | **100 / 100** | **100 / 100** |
+
+**100/100 successful requests completed below the 200 ms server-side pipeline target.** Server and client timing measure different boundaries; the round-trip time includes HTTP and serialization overhead. Percentiles are **nearest-rank** order statistics, not modeled performance guarantees.
+
+![Measured API latency for 100 unique queries](benchmark_100_query_latency.png)
+
+### Where the time goes
+
+Mean server-reported latency breakdown across all 100 requests:
+
+| Pipeline stage | Mean latency | Approx. share of total |
+|:--|--:|--:|
+| Runtime feature generation (29 features) | **29.62 ms** | **72.9%** |
+| SBERT query embedding | 7.58 ms | 18.6% |
+| LambdaMART reranking | 2.48 ms | 6.1% |
+| FAISS Top-100 candidate retrieval | 0.90 ms | 2.2% |
+
+Feature generation remains the primary observed bottleneck. The stage figures do not sum exactly to the total because of small uninstrumented overhead and rounding.
+
+### Reproduce the local benchmark
+
+Start the FastAPI server with the locally restored artifacts (see [Week 7 application](#week-7-application-source-included)), then run the PowerShell benchmark **from the repository root**:
+
+```powershell
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\benchmark_100_queries.ps1
+```
+
+The script makes an API health check, sends an unmeasured warm-up request, performs 100 sequential search requests, and exports detailed CSV and Markdown summary files to its `benchmark_results/` output folder.
+
+**Evidence:** [100-row request-level CSV](benchmark_100_queries.csv) · [PowerShell benchmark source](benchmark_100_queries.ps1) · [methodology and stage breakdown](local_runtime_validation.md)
+
+> **Interpretation:** This is a **warm-model, concurrency=1 local latency/functional smoke benchmark**. It is not a cold model-start benchmark, GPU comparison, concurrency/load test, offline ranking-quality evaluation, or production SLA. Historical Week 7 latency figures above were produced in **different experimental conditions** and should be kept separate. The benchmark measures successful responses, not whether every returned product is relevant.
 
 ## Verify this publication snapshot
 
