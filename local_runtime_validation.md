@@ -6,7 +6,7 @@
 **Requests:** 100 distinct product search queries; each with `top_k=5`, `candidate_k=100`.  
 **Result:** 100/100 requests returned five products; zero failures; all server pipeline times under 200 ms.
 
-![Local 100-query latency measurements](../assets/benchmark_100_query_latency.png)
+![Local 100-query latency measurements](benchmark_100_query_latency.png)
 
 ## Observed latency
 
