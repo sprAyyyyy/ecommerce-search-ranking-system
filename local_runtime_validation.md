@@ -42,7 +42,7 @@ Stage timers omit a small residual of approximately 0.07 ms per request. Mean cl
 ## Raw evidence and rerun
 
 - [Per-request CSV (100 rows)](../results/benchmark_100_queries.csv)
-- [Original PowerShell test script](../scripts/benchmark_100_queries.ps1)
+- [Original PowerShell test script](benchmark_100_queries.ps1)
 
 Rerun from the repository root, after starting FastAPI locally:
 
