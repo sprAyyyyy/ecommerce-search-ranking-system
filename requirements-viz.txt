@@ -1,0 +1,2 @@
+# Optional: only required to regenerate benchmark PNG charts
+matplotlib>=3.7,<4

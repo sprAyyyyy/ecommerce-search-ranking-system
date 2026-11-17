@@ -1,0 +1,46 @@
+# Data, model checkpoints, archives and large experiment intermediates
+/data/
+/datasets/
+/models/
+/checkpoints/
+/artifacts/
+/outputs/
+/cache/
+*.parquet
+*.feather
+*.arrow
+*.pkl
+*.pickle
+*.joblib
+*.onnx
+*.pt
+*.pth
+*.ckpt
+*.safetensors
+*.h5
+*.hdf5
+*.zip
+*.tar
+*.tar.gz
+*.7z
+
+# Environments / secrets
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*credentials*.json
+*secret*.json
+.ipynb_checkpoints/
+__pycache__/
+*.pyc
+.venv/
+venv/
+.pytest_cache/
+
+# Editor / OS
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
