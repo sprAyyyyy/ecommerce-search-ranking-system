@@ -1,0 +1,5 @@
+removed_feature_group,ndcg_at_10,absolute_drop,relative_drop_pct,evaluation_scope
+Metadata/structural,0.8909,0.0388,4.17,fixed_200_query_reranking
+Lexical,0.8976,0.0321,3.46,fixed_200_query_reranking
+Semantic/SBERT,0.9191,0.0106,1.14,fixed_200_query_reranking
+Multimodal/CLIP,0.9255,0.0042,0.45,fixed_200_query_reranking

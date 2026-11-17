@@ -1,0 +1,9 @@
+model,ndcg_at_10,ndcg_at_3,recall_at_3,mrr,evaluation_scope
+LambdaMART,0.905,0.9026,0.9735,0.4333,coldstart_holdout_45_queries
+ZeroShot+LLM,0.899,0.8966,0.9735,0.4296,coldstart_holdout_45_queries
+ListNet,0.8789,0.8762,0.9735,0.4185,coldstart_holdout_45_queries
+LLM-only,0.8594,0.8507,0.9583,0.4074,coldstart_holdout_45_queries
+SBERT,0.844,0.8413,0.9735,0.4037,coldstart_holdout_45_queries
+ZeroShotAdapter,0.8388,0.8361,0.9735,0.4,coldstart_holdout_45_queries
+CLIP,0.816,0.8131,0.9659,0.4,coldstart_holdout_45_queries
+BM25,0.8009,0.7817,0.9129,0.363,coldstart_holdout_45_queries

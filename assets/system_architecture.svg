@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="430" viewBox="0 0 1200 430" role="img" aria-label="E-commerce search architecture with query understanding, lexical semantic and multimodal retrieval, LambdaMART ranking, cold-start fallback, FastAPI and Streamlit">
+<style>
+  .bg{fill:#fbfcff}.panel{fill:#ffffff;stroke:#cbd5e1;stroke-width:1.6}.ink{fill:#15263c;font-family:Arial,Helvetica,sans-serif}.label{font-size:17px;font-weight:bold}.sub{font-size:13px;fill:#64748b}.edge{stroke:#94a3b8;stroke-width:2;fill:none;marker-end:url(#arrow)}.hint{font-size:12px;fill:#64748b}
+</style>
+<defs><marker id="arrow" markerWidth="7" markerHeight="7" refX="6" refY="3" orient="auto" markerUnits="strokeWidth"><path d="M0 0 L6 3 L0 6 z" fill="#94a3b8"/></marker></defs>
+<rect width="1200" height="430" rx="16" class="bg"/>
+<text x="40" y="43" class="ink" style="font-size:24px;font-weight:bold">Multi-stage search ranking architecture</text>
+<text x="40" y="66" class="sub">Candidate generation → feature fusion → learned reranking → interactive serving</text>
+<rect x="32" y="153" width="145" height="88" rx="12" class="panel"/><text x="104" y="190" text-anchor="middle" class="ink label">Query</text><text x="104" y="211" text-anchor="middle" class="sub">Search intent</text>
+<rect x="220" y="139" width="190" height="116" rx="12" class="panel"/><text x="315" y="175" text-anchor="middle" class="ink label">Understanding</text><text x="315" y="196" text-anchor="middle" class="sub">Normalize / rewrite</text><text x="315" y="218" text-anchor="middle" class="sub">Llama 3 + JSON</text>
+<rect x="465" y="96" width="190" height="73" rx="10" class="panel"/><text x="560" y="125" text-anchor="middle" class="ink label">BM25 / TF-IDF</text><text x="560" y="146" text-anchor="middle" class="sub">Lexical retrieval</text>
+<rect x="465" y="181" width="190" height="73" rx="10" class="panel"/><text x="560" y="210" text-anchor="middle" class="ink label">SBERT + FAISS</text><text x="560" y="231" text-anchor="middle" class="sub">Semantic retrieval</text>
+<rect x="465" y="266" width="190" height="73" rx="10" class="panel"/><text x="560" y="295" text-anchor="middle" class="ink label">CLIP</text><text x="560" y="316" text-anchor="middle" class="sub">Visual evidence</text>
+<rect x="712" y="152" width="179" height="112" rx="12" class="panel"/><text x="801" y="183" text-anchor="middle" class="ink label">Feature fusion</text><text x="801" y="205" text-anchor="middle" class="sub">Lexical + semantic</text><text x="801" y="225" text-anchor="middle" class="sub">CLIP + metadata</text>
+<rect x="938" y="151" width="225" height="95" rx="12" class="panel"/><text x="1050" y="185" text-anchor="middle" class="ink label">LambdaMART</text><text x="1050" y="207" text-anchor="middle" class="sub">Ranked products</text><text x="1050" y="228" text-anchor="middle" class="sub">FastAPI / Streamlit</text>
+<path d="M177 197 H220" class="edge"/><path d="M410 197 H435 V132 H465" class="edge"/><path d="M410 197 H465" class="edge"/><path d="M410 197 H436 V302 H465" class="edge"/>
+<path d="M655 132 H685 V187 H712" class="edge"/><path d="M655 217 H712" class="edge"/><path d="M655 302 H686 V240 H712" class="edge"/><path d="M891 208 H938" class="edge"/>
+<path d="M314 255 V380 H1010 V246" class="edge" stroke-dasharray="7 6"/><text x="600" y="371" class="hint">Alternative path when supervised evidence is limited: ZeroShot + LLM fallback</text>
+</svg>

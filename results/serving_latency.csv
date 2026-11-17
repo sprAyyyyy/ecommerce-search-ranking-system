@@ -1,0 +1,6 @@
+metric,latency_ms,scope
+V1.1 mean latency,212.86,before_optimization
+V1.3 fresh mean latency,83.94,after_optimization
+V1.3 fresh P95 latency,99.91,after_optimization
+V1.3 cached mean latency,28.84,cached
+V2 API round-trip mean latency,92.57,http_round_trip

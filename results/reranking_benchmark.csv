@@ -1,0 +1,8 @@
+model,ndcg_at_10,map_at_10,mrr,evaluation_scope
+LambdaMART,0.9297,0.9072,0.9667,fixed_200_query_reranking
+XGBoost Pointwise,0.9222,0.9133,0.9625,fixed_200_query_reranking
+ListNet,0.9196,0.8923,0.9533,fixed_200_query_reranking
+SBERT,0.8058,0.7286,0.7783,fixed_200_query_reranking
+BM25,0.8032,0.7372,0.7958,fixed_200_query_reranking
+TF-IDF,0.7799,0.694,0.7358,fixed_200_query_reranking
+CLIP,0.7325,0.7338,0.705,fixed_200_query_reranking

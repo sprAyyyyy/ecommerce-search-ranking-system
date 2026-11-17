@@ -1,0 +1,5 @@
+model,ndcg_at_10,mrr,recall_at_10,recall_at_50,evaluation_scope
+BM25,0.7889,0.7608,0.5158,0.6442,full_catalog_200_queries
+SBERT+FAISS,0.8058,0.7783,0.4817,0.595,full_catalog_200_queries
+CLIP-image,0.7151,0.7312,0.0275,0.0467,full_catalog_200_queries
+SBERT+CLIP,0.8066,0.7904,0.3367,0.4825,full_catalog_200_queries

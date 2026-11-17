@@ -1,0 +1,7 @@
+error_category,query_count,share_pct,mean_ndcg_at_10,evaluation_scope
+Top-1 ranking inversion,10,27.0,0.766,37_queries_below_0.90
+Ambiguous/subjective query,9,24.3,0.762,37_queries_below_0.90
+Cross-signal fine-ordering conflict,8,21.6,0.869,37_queries_below_0.90
+Multimodal evidence underweighted,7,18.9,0.677,37_queries_below_0.90
+LambdaMART-specific ranking instability,2,5.4,0.757,37_queries_below_0.90
+Lexical evidence underweighted,1,2.7,0.624,37_queries_below_0.90
